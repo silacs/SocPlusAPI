@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.JSInterop.Infrastructure;
 using SocPlus.Data;
 using SocPlus.DTOs;
 using SocPlus.Models;
@@ -26,9 +25,9 @@ public class PostService {
     }
     public async Task<Result> GetVotes(string postId, string? userId) {
         var votes = await Task.Run(() => _context.Votes.Where(v => v.PostId == Guid.Parse(postId)));
-        var goodVotes = votes.Where(v => v.Positive).Count();
+        var goodVotes = votes.Count(v => v.Positive);
         var badVotes = votes.Count() - goodVotes;
-        bool? userVote = userId is null ? null : (await votes.FirstOrDefaultAsync(v => v.UserId == Guid.Parse(userId)))?.Positive;
+        var userVote = userId is null ? null : (await votes.FirstOrDefaultAsync(v => v.UserId == Guid.Parse(userId)))?.Positive;
         return new Result(new {
             goodVotes,
             badVotes,
@@ -54,13 +53,13 @@ public class PostService {
         if (dto.Positive is null) {
             await _context.SaveChangesAsync();
             return new Result("Successfully removed vote");
-        };
+        }
         await _context.Votes.AddAsync((Vote)dto);
         await _context.SaveChangesAsync();
         return new Result("Successfully added vote");
     }
     public async Task<Result> DeletePost(string userId, string postId) {
-        var post = _context.Posts.Find(Guid.Parse(postId));
+        var post = await _context.Posts.FindAsync(Guid.Parse(postId));
         if (post is null) return new Result(new Error("PostId", "Post doesn't exist"));
         if (post.UserId != Guid.Parse(userId)) return new Result(new Error("UserId", "You are not the owner of this post")) {
             ErrorCode = 403
@@ -69,21 +68,21 @@ public class PostService {
         await _context.SaveChangesAsync();
         return new Result("Successfully deleted post");
     }
-    public async Task<Result> UploadPost(string userId, PostUploadDTO postdto) {
+    public async Task<Result> UploadPost(string userId, PostUploadDTO postDTO) {
         var post = new Post() { 
             UserId = Guid.Parse(userId),
-            Text = postdto.Text,
-            Visibility = postdto.Visibility
+            Text = postDTO.Text,
+            Visibility = postDTO.Visibility
         };
         
-        if (postdto.Images?.Length == 0 || postdto.Images is null) {
+        if (postDTO.Images?.Length == 0 || postDTO.Images is null) {
             await _context.Posts.AddAsync(post);
             await _context.SaveChangesAsync();
             return new Result("Successfully uploaded post");
         }
 
         List<Image> filenames = []; 
-        foreach (var image in postdto.Images) {
+        foreach (var image in postDTO.Images) {
             if (!image.ContentType.StartsWith(@"image/", StringComparison.OrdinalIgnoreCase)) {
                 _ = Cleanup();
                 return new Result(new Error("Image", $"Invalid Image: {image.FileName}"));
@@ -95,7 +94,7 @@ public class PostService {
                 FileName = filename
             });
 
-            using var stream = new FileStream(Path.Combine(FilePath, filename), FileMode.Create);
+            await using var stream = new FileStream(Path.Combine(FilePath, filename), FileMode.Create);
             await image.CopyToAsync(stream);
         }
         await _context.Posts.AddAsync(post);
@@ -117,8 +116,8 @@ public class PostService {
         if (image is null) return new Result(new Error("Filename", "Image not found")) { ErrorCode = 404 };
         if (image.Post.Visibility != Visibility.Public) 
             return new Result(new Error("Forbidden", "Forbidden")) { ErrorCode = 403 };
-        if (!File.Exists(Path.Combine(FilePath, filename))) 
-            return new Result(new Error("Filename", "Image not found")) { ErrorCode = 404 };
-        return new Result(File.ReadAllBytes(Path.Combine(FilePath, filename)));
+        return File.Exists(Path.Combine(FilePath, filename)) 
+            ? new Result(await File.ReadAllBytesAsync(Path.Combine(FilePath, filename))) 
+            : new Result(new Error("Filename", "Image not found")) { ErrorCode = 404 };
     }
 }

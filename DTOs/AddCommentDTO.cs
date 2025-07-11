@@ -2,10 +2,10 @@
 
 namespace SocPlus.DTOs; 
 public class AddCommentDTO {
-    public string UserId { get; set; }
-    public string PostId { get; set; }
+    public required string UserId { get; set; }
+    public required string PostId { get; set; }
     public string? ParentCommentId { get; set; }
-    public string Content { get; set; }
+    public required string Content { get; set; }
     public bool IsReply { get; set; }
     public static explicit operator Comment(AddCommentDTO dto) {
         return new Comment {

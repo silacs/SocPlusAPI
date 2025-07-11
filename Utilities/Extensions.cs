@@ -12,8 +12,9 @@ public static class Extensions {
     public static string ToCSVColumn(this IEnumerable<string> strings) {
         var i = 0;
         var sb = new StringBuilder();
-        foreach (var str in strings) {
-            if (i == strings.Count() - 1) {
+        var strs = strings.ToList();
+        foreach (var str in strs) {
+            if (i == strs.Count - 1) {
                 sb.Append($"\n  {str}\n");
             }
             else {

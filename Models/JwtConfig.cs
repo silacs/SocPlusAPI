@@ -1,9 +1,7 @@
-﻿#pragma warning disable CS8618
-
-namespace SocPlus.Models; 
+﻿namespace SocPlus.Models; 
 public class JwtConfig {
-    public string Secret { get; set; }
-    public string Issuer { get; set; }
-    public string Audience { get; set; }
-    public int AccessHours { get; set; }
+    public required string Secret { get; init; }
+    public required string Issuer { get; init; }
+    public required string Audience { get; init; }
+    public required int AccessHours { get; init; }
 }

@@ -1,7 +1,5 @@
-﻿#pragma warning disable CS8618
-
-namespace SocPlus.DTOs; 
+﻿namespace SocPlus.DTOs; 
 public class VerifyDTO {
-    public string Email { get; set; }
-    public string Code { get; set; }
+    public required string Email { get; set; }
+    public required string Code { get; set; }
 }

@@ -1,10 +1,10 @@
-﻿#pragma warning disable CS8618
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SocPlus.Models;
 
 namespace SocPlus.Data;
 
-public class SocPlusDbContext : DbContext {
+public class SocPlusDbContext(DbContextOptions<SocPlusDbContext> options) : DbContext(options) {
+    
     public DbSet<VerificationCode> VerificationCodes { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
@@ -14,10 +14,6 @@ public class SocPlusDbContext : DbContext {
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Vote> Votes { get; set; }
 
-
-    public SocPlusDbContext(DbContextOptions<SocPlusDbContext> options) : base(options) {
-        
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);

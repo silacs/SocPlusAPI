@@ -1,11 +1,11 @@
 ﻿#pragma warning disable CS8618
 namespace SocPlus.Models; 
 public class Vote {
-    public Guid UserId { get; set; }
-    public Guid PostId { get; set; }
-    public bool Positive { get; set; }
-    public DateTimeOffset VoteDate { get; set; } = DateTimeOffset.UtcNow;
+    public Guid UserId { get; init; }
+    public Guid PostId { get; init; }
+    public bool Positive { get; init; }
+    public DateTimeOffset VoteDate { get; init; } = DateTimeOffset.UtcNow;
     //Navigation Props
-    public User User { get; set; }
-    public Post Post { get; set; }
+    public User User { get; init; }
+    public Post Post { get; init; }
 }

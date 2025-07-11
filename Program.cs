@@ -1,14 +1,11 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Server.Kestrel.Https;
-using Microsoft.OpenApi.Models;
 using SocPlus.Utilities;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.ConfigureKestrel(o => {
-    o.Listen(IPAddress.Any, 80);
-    o.Listen(IPAddress.Any, 443, o => {
-        o.UseHttps();
+builder.WebHost.ConfigureKestrel(serverOptions => {
+    serverOptions.Listen(IPAddress.Any, 80);
+    serverOptions.Listen(IPAddress.Any, 443, listenOptions => {
+        listenOptions.UseHttps();
     });
     //o.Listen(IPAddress.Any, 443, listenOptions => {
     //    listenOptions.UseHttps(h => {

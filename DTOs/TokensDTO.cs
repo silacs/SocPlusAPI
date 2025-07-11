@@ -1,6 +1,5 @@
-﻿#pragma warning disable CS8618
-namespace SocPlus.DTOs; 
+﻿namespace SocPlus.DTOs; 
 public class TokensDTO {
-    public string AccessToken { get; set; }
-    public string RefreshToken { get; set; }
+    public required string AccessToken { get; set; }
+    public required string RefreshToken { get; set; }
 }

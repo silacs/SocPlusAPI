@@ -2,8 +2,8 @@
 
 namespace SocPlus.DTOs; 
 public class VoteDTO {
-    public string UserId { get; set; }
-    public string PostId { get; set; }
+    public required string UserId { get; set; }
+    public required string PostId { get; set; }
     public bool? Positive { get; set; }
     public static explicit operator Vote(VoteDTO dto) {
         return new Vote {

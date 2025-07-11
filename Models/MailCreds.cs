@@ -1,7 +1,5 @@
-﻿#pragma warning disable CS8618
-
-namespace SocPlus.Models; 
+﻿namespace SocPlus.Models; 
 public class MailCreds {
-    public string Username { get; set; }
-    public string Password { get; set; }
+    public required string Username { get; init; }
+    public required string Password { get; init; }
 }

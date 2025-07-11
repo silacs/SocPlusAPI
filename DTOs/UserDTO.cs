@@ -1,17 +1,15 @@
-﻿#pragma warning disable CS8618
-using SocPlus.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using SocPlus.Models;
 
 namespace SocPlus.DTOs; 
 public class UserDTO {
     public Guid Id { get; set; }
-    public string Name { get; set; }
-    public string Surname { get; set; }
-    public string Email { get; set; }
-    public string Username { get; set; }
+    public required string Name { get; set; }
+    public required string Surname { get; set; }
+    public required string Email { get; set; }
+    public required string Username { get; set; }
     public DateTimeOffset RegistrationDate { get; set; }
     public bool Verified { get; set; }
-    public string Role { get; set; }
+    public required string Role { get; set; }
     public static explicit operator UserDTO(User user) {
         return new UserDTO {
             Id = user.Id,

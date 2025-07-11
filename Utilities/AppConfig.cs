@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -21,14 +22,18 @@ public static class AppConfig {
             "SqlServerConnectionString",
         ];
         List<string?> values = [];
-        foreach (string var in variables) {
-            values.Add(conf.GetValue<string?>(var));
-        }
-        if (values.Any(v => v is null)) {
-            Console.WriteLine($"Environment Variables: {variables.ToCSVColumn()}" +
-                $"  need to be set in order for this app to function.\n" +
-                $"You are missing: {variables.Where((_, i) => values[i] is null).ToCSVColumn()}");
+        values.AddRange(variables.Select(conf.GetValue<string?>));
+
+        if (!values.Any(v => v is null)) return;
+        Console.WriteLine($"Environment Variables: {variables.ToCSVColumn()}" +
+                          $"  need to be set in order for this app to function.\n" +
+                          $"You are missing: {variables.Where((_, i) => values[i] is null).ToCSVColumn()}\n");
+        Console.WriteLine("Press any key to exit...");
+        Console.ReadKey();
+        try {
             Environment.Exit(1);
+        } catch (SecurityException) {
+            throw new Exception("Could not properly exit program");
         }
     }
 
@@ -70,15 +75,16 @@ public static class AppConfig {
          });
         return services;
     }
-    public static IServiceCollection AddDependencies(this IServiceCollection services, MailCreds mailCreds, JwtConfig jwtConfig) {
+
+    private static void AddDependencies(this IServiceCollection services, MailCreds mailCreds, JwtConfig jwtConfig) {
         services.AddScoped<AuthService>();
         services.AddScoped<MailService>();
         services.AddScoped<PostService>();
         services.AddScoped<MailCreds>(_ => mailCreds);
         services.AddScoped<JwtConfig>(_ => jwtConfig);
-        return services;
     }
-    public static IServiceCollection AddJwtAuth(this IServiceCollection services, JwtConfig jwtConfig) {
+
+    private static void AddJwtAuth(this IServiceCollection services, JwtConfig jwtConfig) {
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o => {
             o.TokenValidationParameters = new TokenValidationParameters {
                 ValidateIssuer = true,
@@ -105,7 +111,5 @@ public static class AppConfig {
             };
         });
         services.AddAuthorization();
-        return services;
-
     }
 }

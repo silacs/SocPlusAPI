@@ -1,13 +1,11 @@
-﻿#pragma warning disable CS8618
-
-using SocPlus.Models;
+﻿using SocPlus.Models;
 
 namespace SocPlus.DTOs; 
 public class PostDTO {
     public Guid Id { get; set; }
-    public UserDTO User { get; set; }
-    public string Text { get; set; }
-    public string[] Images { get; set; }
+    public required UserDTO User { get; set; }
+    public required string Text { get; set; }
+    public required string[] Images { get; set; }
     public DateTimeOffset Created { get; set; }
     public Visibility Visibility { get; set; }
     public static explicit operator PostDTO(Post post) {

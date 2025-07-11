@@ -1,12 +1,13 @@
 ﻿#pragma warning disable CS8618
-
 using System.ComponentModel.DataAnnotations;
 
 namespace SocPlus.Models; 
 public class Image {
-    public Guid Id { get; set; }
-    public Guid PostId { get; set; }
-    public string FileName { get; set; }
+    public Guid Id { get; init; }
+    public Guid PostId { get; init; }
+    
+    [MaxLength(50)]
+    public required string FileName { get; init; }
     //Navigation Props
-    public Post Post { get; set; }
+    public Post Post { get; init; }
 }

@@ -92,7 +92,7 @@ public class AuthService {
         try {
             user = await _context.Users.FindAsync(Guid.Parse(userId));
             return !(user is null);
-        } catch (FormatException e) {
+        } catch (FormatException) {
             return false;
         }
     }
@@ -112,7 +112,8 @@ public class AuthService {
         _ = _mail.SendCode(code, codeDTO.Email);
         return new Result("We'll send a code if that email is registered");
     }
-    public async Task<string> GenerateCode() {
+
+    private static async Task<string> GenerateCode() {
         var code = await Task.Run(() => RandomNumberGenerator.GetInt32(0, 1000000));
         return code.ToString("D6");
     }
