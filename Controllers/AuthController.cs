@@ -20,7 +20,8 @@ public class AuthController(AuthService auth) : ControllerBase {
         return (await auth.DeleteUser(User.FindFirstValue(ClaimTypes.NameIdentifier)!)).ToActionResult();
     }
     [HttpPut]
-    public async Task<ActionResult> EditUser() {
+    [Authorize]
+    public async Task<ActionResult> EditUser([FromBody] SignupDTO dto) {
         return await Task.Run(Ok);
     }
     [HttpGet("{id}")]

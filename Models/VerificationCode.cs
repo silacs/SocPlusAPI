@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace SocPlus.Models; 
 public class VerificationCode {
     [Key]
-    [MaxLength(300)]
+    [MaxLength(450)]
     public required string Email { get; init; }
     [MaxLength(6)]
     public required string Code { get; init; }

@@ -1,5 +1,5 @@
 ﻿namespace SocPlus.DTOs;
 
-public class AddFollowDTO {
+public class FollowDTO {
     public required string UserId { get; set; }
 }

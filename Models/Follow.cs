@@ -2,9 +2,15 @@
 namespace SocPlus.Models;
 
 public class Follow {
-    public Guid FollowerId { get; set; }
-    public Guid UserId { get; set; }
+    /// <summary>
+    /// The Id of the user who is following the owner of UserId
+    /// </summary>
+    public Guid FollowerId { get; init; }
+    /// <summary>
+    /// The Id of the user who is getting followed by the owner of FollowerId
+    /// </summary>
+    public Guid UserId { get; init; }
     //Navigation Props
-    public User Follower;
-    public User User;
+    public User Follower { get; init; }
+    public User User { get; init; }
 }

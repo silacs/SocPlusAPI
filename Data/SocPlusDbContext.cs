@@ -13,7 +13,7 @@ public class SocPlusDbContext(DbContextOptions<SocPlusDbContext> options) : DbCo
     public DbSet<Post> Posts { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Vote> Votes { get; set; }
-
+    public DbSet<Follow> Follows { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
@@ -30,5 +30,17 @@ public class SocPlusDbContext(DbContextOptions<SocPlusDbContext> options) : DbCo
             .WithMany(u => u.Votes)
             .HasForeignKey(v => v.UserId)
             .OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<Follow>()
+            .HasOne(f => f.Follower)
+            .WithMany()
+            .HasForeignKey(f => f.FollowerId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Follow>()
+            .HasOne(f => f.User)
+            .WithMany()
+            .HasForeignKey(f => f.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
+        
+        modelBuilder.Entity<Follow>().HasKey(f => new { f.UserId, f.FollowerId });
     }
 }

@@ -4,18 +4,14 @@ using System.Net;
 using System.Text;
 
 namespace SocPlus.Services; 
-public class MailService {
-    private readonly MailCreds _creds;
-    public MailService(MailCreds creds) {
-        _creds = creds;
-    }
+public class MailService(MailCreds creds) {
     public async Task SendCode(string code, string recipient) {
         var client = new SmtpClient("smtp-mail.outlook.com", 587);
-        var creds = new NetworkCredential(_creds.Username, _creds.Password);
+        var creds1 = new NetworkCredential(creds.Username, creds.Password);
         client.UseDefaultCredentials = false;
         client.EnableSsl = true;
-        client.Credentials = creds;
-        var from = new MailAddress(_creds.Username, "no-reply");
+        client.Credentials = creds1;
+        var from = new MailAddress(creds.Username, "no-reply");
         var to = new MailAddress(recipient);
         var message = new MailMessage(from, to);
         message.IsBodyHtml = true;

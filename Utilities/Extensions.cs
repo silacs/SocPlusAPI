@@ -87,4 +87,13 @@ public static class Extensions {
         await context.SaveChangesAsync();
         return token;
     }
+
+    public static Guid ToGuid(this string id) {
+        return Guid.TryParse(id, out var guid) ? guid : Guid.Empty;
+    }
+    public static IQueryable<T> Paginate<T>(this IQueryable<T> query, int page, int pageSize) {
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 0;
+        return query.Skip((page - 1) * pageSize).Take(pageSize);
+    }
 }
